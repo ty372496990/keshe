@@ -90,8 +90,9 @@ public class EduTeacherController {
     }
 
     //根据ID修改
-    @PostMapping("upDateTeacher")
-    public R upDateTeacher(@RequestBody EduTeacher eduTeacher){
+    @PostMapping("upDateTeacher/{id}")
+    public R upDateTeacher(@PathVariable String id,
+                            @RequestBody EduTeacher eduTeacher){
         boolean b = eduTeacherService.updateById(eduTeacher);
         if(b){
             return R.ok();
