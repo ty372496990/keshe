@@ -4,11 +4,13 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.online.edu.common.R;
 import com.online.edu.school_eduservice.handler.ConstantPropertiesHandler;
+import org.joda.time.DateTime;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/school_eduservice/oss")
@@ -27,6 +29,10 @@ public class upLoadController {
 
         String originalFilename = file.getOriginalFilename();
         InputStream inputStream = file.getInputStream();
+        String uuid = UUID.randomUUID().toString();
+        originalFilename = uuid + originalFilename;
+        String filePath = new DateTime().toString("yyyy/MM/dd");
+        originalFilename = filePath +"/"+ originalFilename;
         //上传至oss
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);

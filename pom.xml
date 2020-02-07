@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>school_common</module>
-        <module>school_commonservice_oss</module>
+        <module>school_eduservice</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
