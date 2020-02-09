@@ -1,15 +1,18 @@
 package com.online.edu.school_eduservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.online.edu.school_eduservice.entity.EduSubject;
+import com.online.edu.school_eduservice.entity.vo.SubjectNestedVo;
+import com.online.edu.school_eduservice.entity.vo.SubjectVo;
 import com.online.edu.school_eduservice.mapper.EduSubjectMapper;
 import com.online.edu.school_eduservice.service.EduSubjectService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,7 +52,7 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
                 if(row == null){
                     String string = "表格为空！";
                     msg.add(string);
-                    return msg;
+                    continue;
                 }
                 //根据row获取cell
                 Cell cellOne = row.getCell(0);
@@ -99,6 +102,8 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
         }
         return msg;
     }
+
+
     //判断是否有二级分类
     private EduSubject existSecondSubject(String name, String idParent){
         QueryWrapper<EduSubject> wrapper = new QueryWrapper<>();
@@ -114,5 +119,90 @@ public class EduSubjectServiceImpl extends ServiceImpl<EduSubjectMapper, EduSubj
         wrapper.eq("parent_id","0");
         EduSubject eduSubject = baseMapper.selectOne(wrapper);
         return eduSubject;
+    }
+
+
+
+    @Override
+    public List<SubjectNestedVo> nestlist() {
+        //最终要的到的数据列表
+        ArrayList<SubjectNestedVo> subjectNestedVoArrayList = new ArrayList<>();
+
+        //获取一级分类数据记录
+        QueryWrapper<EduSubject> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("parent_id", 0);
+        queryWrapper.orderByAsc("sort", "id");
+        List<EduSubject> subjects = baseMapper.selectList(queryWrapper);
+
+        //获取二级分类数据记录
+        QueryWrapper<EduSubject> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.ne("parent_id", 0);
+        queryWrapper2.orderByAsc("sort", "id");
+        List<EduSubject> subSubjects = baseMapper.selectList(queryWrapper2);
+
+        //填充一级分类vo数据
+        int count = subjects.size();
+        for (int i = 0; i < count; i++) {
+            //遍历一级列表数据
+            EduSubject subject = subjects.get(i);
+
+            //创建一级类别vo对象
+            SubjectNestedVo subjectNestedVo = new SubjectNestedVo();
+            BeanUtils.copyProperties(subject, subjectNestedVo);
+            subjectNestedVoArrayList.add(subjectNestedVo);
+
+            //填充二级分类vo数据
+            ArrayList<SubjectVo> subjectVoArrayList = new ArrayList<>();
+            int count2 = subSubjects.size();
+            for (int j = 0; j < count2; j++) {
+                //遍历二级列表
+                EduSubject subSubject = subSubjects.get(j);
+                if(subject.getId().equals(subSubject.getParentId())){
+
+                    //创建二级类别vo对象
+                    SubjectVo subjectVo = new SubjectVo();
+                    BeanUtils.copyProperties(subSubject, subjectVo);
+                    subjectVoArrayList.add(subjectVo);
+                }
+            }
+            subjectNestedVo.setChildren(subjectVoArrayList);
+        }
+
+
+        return subjectNestedVoArrayList;
+    }
+
+    @Override
+    public boolean removeSubjectById(String id) {
+        QueryWrapper<EduSubject> wrapper = new QueryWrapper<>();
+        wrapper.eq("parent_id",id);
+        Integer integer = baseMapper.selectCount(wrapper);
+        if(integer > 0) {
+            return false;
+        }else {
+            int result = baseMapper.deleteById(id);
+            return result > 0;
+        }
+    }
+
+    @Override
+    public boolean addFirstLevel(EduSubject eduSubject) {
+        EduSubject eduSubject1 = this.existSubject(eduSubject.getId());
+        if(eduSubject1 == null) {
+            eduSubject.setParentId("0");
+            int insert = baseMapper.insert(eduSubject);
+            return insert > 0;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addSecondLevel(EduSubject eduSubject) {
+        EduSubject eduSubject2 = this.existSecondSubject(eduSubject.getTitle(),eduSubject.getParentId());
+        if(eduSubject2 == null) {
+            int insert = baseMapper.insert(eduSubject);
+            return insert > 0;
+        }
+        return false;
     }
 }

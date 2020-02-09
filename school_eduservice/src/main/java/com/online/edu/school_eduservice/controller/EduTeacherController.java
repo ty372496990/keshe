@@ -44,9 +44,13 @@ public class EduTeacherController {
     }
     //逻辑删除
     @DeleteMapping("{id}")
-    public boolean deleteById(@PathVariable String id){
+    public R deleteById(@PathVariable String id){
         boolean b = eduTeacherService.removeById(id);
-        return b;
+        if(b) {
+            return R.ok();
+        }else {
+            return R.error();
+        }
     }
 
     //分页
