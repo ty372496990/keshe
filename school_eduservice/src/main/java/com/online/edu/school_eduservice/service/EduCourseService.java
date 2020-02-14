@@ -5,6 +5,7 @@ import com.online.edu.school_eduservice.entity.EduCourse;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.online.edu.school_eduservice.entity.form.courseInfoForm;
 import com.online.edu.school_eduservice.entity.query.courseQuery;
+import com.online.edu.school_eduservice.entity.vo.CoursePublishVo;
 
 /**
  * <p>
@@ -25,4 +26,6 @@ public interface EduCourseService extends IService<EduCourse> {
     void pageQuery(Page<EduCourse> pageParam, courseQuery courseQuery);
 
     Boolean delteCourse(String id);
+
+    CoursePublishVo getCourseAllInfo(String courseId);
 }

@@ -6,6 +6,7 @@ import com.online.edu.common.R;
 import com.online.edu.school_eduservice.entity.EduCourse;
 import com.online.edu.school_eduservice.entity.form.courseInfoForm;
 import com.online.edu.school_eduservice.entity.query.courseQuery;
+import com.online.edu.school_eduservice.entity.vo.CoursePublishVo;
 import com.online.edu.school_eduservice.service.EduCourseService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,6 +29,25 @@ import java.util.List;
 public class EduCourseController {
     @Autowired
     private EduCourseService eduCourseService;
+    //发布课程，修改课程状态为Normal
+    @PostMapping("publishCourse/{courseId}")
+    public R publishCourse(@PathVariable String courseId){
+        EduCourse eduCourse = new EduCourse();
+        eduCourse.setId(courseId);
+        eduCourse.setStatus("Normal");
+        boolean b = eduCourseService.updateById(eduCourse);
+        if(b) {
+            return R.ok();
+        }else {
+            return R.error();
+        }
+    }
+    //根据课程id得到课程详细信息
+    @GetMapping("getAllCourseInfo/{courseId}")
+    public R getAllCourseInfo(@PathVariable String courseId){
+        CoursePublishVo courseAllInfo=eduCourseService.getCourseAllInfo(courseId);
+        return R.ok().data("info",courseAllInfo);
+    }
     @PostMapping
     public R addCourseInfo(@RequestBody courseInfoForm infoForm){
         String courseid= eduCourseService.insertCourseInfo(infoForm);

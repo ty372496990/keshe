@@ -6,6 +6,7 @@ import com.online.edu.school_eduservice.entity.EduChapter;
 import com.online.edu.school_eduservice.entity.EduVideo;
 import com.online.edu.school_eduservice.entity.vo.ChapterVo;
 import com.online.edu.school_eduservice.entity.vo.VideoVo;
+import com.online.edu.school_eduservice.handler.EduException;
 import com.online.edu.school_eduservice.mapper.EduChapterMapper;
 import com.online.edu.school_eduservice.service.EduChapterService;
 import com.online.edu.school_eduservice.service.EduVideoService;
@@ -81,5 +82,16 @@ public class EduChapterServiceImpl extends ServiceImpl<EduChapterMapper, EduChap
         }
 
         return chapterVoArrayList;
+    }
+
+    @Override
+    public boolean removeChapterById(String id) {
+        //根据id查询是否存在视频，如果有则提示用户尚有子节点
+        if(eduVideoService.getCountByChapterId(id)){
+            throw new EduException(20001,"该分章节下存在视频课程，请先删除视频课程");
+        }
+
+        Integer result = baseMapper.deleteById(id);
+        return null != result && result > 0;
     }
 }

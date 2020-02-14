@@ -24,4 +24,19 @@ public class EduVideoServiceImpl extends ServiceImpl<EduVideoMapper, EduVideo> i
         wrapper.eq("course_id",id);
         baseMapper.delete(wrapper);
     }
+
+    @Override
+    public boolean getCountByChapterId(String id) {
+        QueryWrapper<EduVideo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("chapter_id", id);
+        Integer count = baseMapper.selectCount(queryWrapper);
+        return null != count && count > 0;
+    }
+
+    @Override
+    public Boolean removeVideoById(String videoId) {
+        //TODO 预留删除视频
+        int i = baseMapper.deleteById(videoId);
+        return i > 0;
+    }
 }
