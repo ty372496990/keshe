@@ -5,6 +5,7 @@
     <modules>
         <module>school_common</module>
         <module>school_eduservice</module>
+        <module>edu_videoservice</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
