@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <p>
  * 课程视频 服务实现类
@@ -24,6 +27,21 @@ public class EduVideoServiceImpl extends ServiceImpl<EduVideoMapper, EduVideo> i
     videoClient videoClient;
     @Override
     public void deleteVideoByCourseId(String id) {
+        //把课程里的所有视频全部删除
+        QueryWrapper<EduVideo> wrapperVideo = new QueryWrapper<>();
+        wrapperVideo.eq("course_id",id);
+        wrapperVideo.select("video_source_id");
+        //1 获得所有课程的id
+        List<String> listId= new ArrayList<>();
+        List<EduVideo> eduVideos = baseMapper.selectList(wrapperVideo);
+        for (EduVideo eduVideo : eduVideos) {
+            listId.add(eduVideo.getVideoSourceId());
+        }
+        //2 调用方法
+        videoClient.deleteMoreVideo(listId);
+
+
+
         QueryWrapper<EduVideo> wrapper = new QueryWrapper<>();
         wrapper.eq("course_id",id);
         baseMapper.delete(wrapper);

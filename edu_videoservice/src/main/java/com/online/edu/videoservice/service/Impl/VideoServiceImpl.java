@@ -10,10 +10,12 @@ import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
 import com.online.edu.videoservice.service.VideoService;
 import com.online.edu.videoservice.utils.AliYunSDKUtils;
 import com.online.edu.videoservice.utils.ConstantPropertiesUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.List;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -50,6 +52,17 @@ public class VideoServiceImpl implements VideoService {
         DeleteVideoRequest request = new DeleteVideoRequest();
         //支持传入多个视频ID，多个用逗号分隔
         request.setVideoIds(videoId);
+        DeleteVideoResponse response = client.getAcsResponse(request);
+        System.out.print("RequestId = " + response.getRequestId() + "\n");
+    }
+    //批量删除阿里云的视频
+    @Override
+    public void deleteMoreVideo(List<String> listId) throws ClientException{
+        DefaultAcsClient client = AliYunSDKUtils.initVodClient(ConstantPropertiesUtil.ACCESS_KEY_ID, ConstantPropertiesUtil.ACCESS_KEY_SECRET);
+        DeleteVideoRequest request = new DeleteVideoRequest();
+        //支持传入多个视频ID，多个用逗号分隔
+        String join = StringUtils.join(listId.toArray(), ',');
+        request.setVideoIds(join);
         DeleteVideoResponse response = client.getAcsResponse(request);
         System.out.print("RequestId = " + response.getRequestId() + "\n");
     }
