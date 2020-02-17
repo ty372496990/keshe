@@ -12,6 +12,11 @@
     <artifactId>edu_videoservice</artifactId>
 
     <dependencies>
+        <!--服务注册-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.online.edu</groupId>
             <artifactId>school_common</artifactId>

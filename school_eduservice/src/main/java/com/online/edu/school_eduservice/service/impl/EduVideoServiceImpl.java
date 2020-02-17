@@ -1,11 +1,14 @@
 package com.online.edu.school_eduservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.online.edu.school_eduservice.client.videoClient;
 import com.online.edu.school_eduservice.entity.EduVideo;
 import com.online.edu.school_eduservice.mapper.EduVideoMapper;
 import com.online.edu.school_eduservice.service.EduVideoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * <p>
@@ -17,7 +20,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EduVideoServiceImpl extends ServiceImpl<EduVideoMapper, EduVideo> implements EduVideoService {
-
+    @Autowired
+    videoClient videoClient;
     @Override
     public void deleteVideoByCourseId(String id) {
         QueryWrapper<EduVideo> wrapper = new QueryWrapper<>();
@@ -35,7 +39,11 @@ public class EduVideoServiceImpl extends ServiceImpl<EduVideoMapper, EduVideo> i
 
     @Override
     public Boolean removeVideoById(String videoId) {
-        //TODO 预留删除视频
+        EduVideo eduVideo = baseMapper.selectById(videoId);
+        String videoSourceId = eduVideo.getVideoSourceId();
+        if(!StringUtils.isEmpty(videoId)) {
+            videoClient.deleteVideoAliYun(videoSourceId);
+        }
         int i = baseMapper.deleteById(videoId);
         return i > 0;
     }
