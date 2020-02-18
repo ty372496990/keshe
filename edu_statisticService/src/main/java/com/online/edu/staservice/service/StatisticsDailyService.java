@@ -1,0 +1,17 @@
+package com.online.edu.staservice.service;
+
+import com.online.edu.staservice.entity.StatisticsDaily;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * <p>
+ * 网站统计日数据 服务类
+ * </p>
+ *
+ * @author ty
+ * @since 2020-02-18
+ */
+public interface StatisticsDailyService extends IService<StatisticsDaily> {
+
+    void countUserNum(String day);
+}

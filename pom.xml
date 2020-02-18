@@ -7,6 +7,8 @@
         <module>school_eduservice</module>
         <module>edu_videoservice</module>
         <module>school_ekservice</module>
+        <module>edu_statisticService</module>
+        <module>edu_userService</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -40,11 +42,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.3.1</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.mybatis.spring.boot</groupId>-->
+<!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
+<!--            <version>1.3.1</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
