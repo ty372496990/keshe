@@ -11,6 +11,11 @@ import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 网站统计日数据 服务实现类
@@ -48,5 +53,46 @@ public class StatisticsDailyServiceImpl extends ServiceImpl<StatisticsDailyMappe
         daily.setDateCalculated(day);
 
         baseMapper.insert(daily);
+    }
+
+    @Override
+    public Map<String, Object> getCount(String type, String begin, String end) {
+        QueryWrapper<StatisticsDaily> wrapper = new QueryWrapper<>();
+        //查询大于开始时间，小于结束时间的数据
+        wrapper.between("date_calculated", begin, end);
+        //查询时间与种类
+        wrapper.select("date_calculated", type);
+        Map<String, Object> map = new HashMap<>();
+
+        List<StatisticsDaily> statisticsDailies = baseMapper.selectList(wrapper);
+        List<String> dateList = new ArrayList<>();
+        List<Integer> numList = new ArrayList<>();
+
+
+        for (StatisticsDaily statisticsDaily : statisticsDailies) {
+            String dateCalculated = statisticsDaily.getDateCalculated();
+            dateList.add(dateCalculated);
+
+            switch (type) {
+                case "register_num":
+                    numList.add(statisticsDaily.getRegisterNum());
+                    break;
+                case "login_num":
+                    numList.add(statisticsDaily.getLoginNum());
+                    break;
+                case "video_view_num":
+                    numList.add(statisticsDaily.getVideoViewNum());
+                    break;
+                case "course_num":
+                    numList.add(statisticsDaily.getCourseNum());
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        map.put("dataList", dateList);
+        map.put("numList", numList);
+        return map;
     }
 }

@@ -1,7 +1,9 @@
 package com.online.edu.staservice.service;
 
-import com.online.edu.staservice.entity.StatisticsDaily;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.online.edu.staservice.entity.StatisticsDaily;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -14,4 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface StatisticsDailyService extends IService<StatisticsDaily> {
 
     void countUserNum(String day);
+
+    Map<String, Object> getCount(String type, String begin, String end);
 }

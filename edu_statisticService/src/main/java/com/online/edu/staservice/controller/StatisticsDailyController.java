@@ -4,11 +4,9 @@ package com.online.edu.staservice.controller;
 import com.online.edu.common.R;
 import com.online.edu.staservice.service.StatisticsDailyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/staservice/statistics-daily")
+@CrossOrigin
 public class StatisticsDailyController {
     @Autowired
     private StatisticsDailyService dailyService;
@@ -28,6 +27,15 @@ public class StatisticsDailyController {
     public R getStatistic(@PathVariable("day") String day){
         dailyService.countUserNum(day);
         return R.ok();
+    }
+
+    //返回显示图表的数据
+    @GetMapping("getDataCount/{type}/{begin}/{end}")
+    public R getDataCount(@PathVariable String type,
+                          @PathVariable String begin,
+                          @PathVariable String end) {
+        Map<String,Object> map= dailyService.getCount(type,begin,end);
+        return R.ok().data(map);
     }
 }
 
