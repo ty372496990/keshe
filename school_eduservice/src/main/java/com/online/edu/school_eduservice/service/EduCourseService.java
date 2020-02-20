@@ -7,6 +7,8 @@ import com.online.edu.school_eduservice.entity.form.courseInfoForm;
 import com.online.edu.school_eduservice.entity.query.courseQuery;
 import com.online.edu.school_eduservice.entity.vo.CoursePublishVo;
 
+import java.util.Map;
+
 /**
  * <p>
  * 课程 服务类
@@ -28,4 +30,6 @@ public interface EduCourseService extends IService<EduCourse> {
     Boolean delteCourse(String id);
 
     CoursePublishVo getCourseAllInfo(String courseId);
+
+    Map<String, Object> pageListWeb(Page<EduCourse> pageParam);
 }
