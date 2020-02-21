@@ -8,6 +8,7 @@ import com.online.edu.school_eduservice.entity.EduCourseDescription;
 import com.online.edu.school_eduservice.entity.form.courseInfoForm;
 import com.online.edu.school_eduservice.entity.query.courseQuery;
 import com.online.edu.school_eduservice.entity.vo.CoursePublishVo;
+import com.online.edu.school_eduservice.entity.vo.CourseWebVo;
 import com.online.edu.school_eduservice.handler.EduException;
 import com.online.edu.school_eduservice.mapper.EduCourseMapper;
 import com.online.edu.school_eduservice.service.EduChapterService;
@@ -171,5 +172,19 @@ public class EduCourseServiceImpl extends ServiceImpl<EduCourseMapper, EduCourse
         map.put("hasPrevious", hasPrevious);
 
         return map;
+    }
+
+
+    @Override
+    public CourseWebVo selectInfoWebById(String id) {
+        this.updatePageViewCount(id);
+        return baseMapper.selectInfoWebById(id);
+    }
+
+    @Override
+    public void updatePageViewCount(String id) {
+        EduCourse course = baseMapper.selectById(id);
+        course.setViewCount(course.getViewCount() + 1);
+        baseMapper.updateById(course);
     }
 }

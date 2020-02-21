@@ -6,7 +6,10 @@ import com.online.edu.common.R;
 import com.online.edu.school_eduservice.entity.EduCourse;
 import com.online.edu.school_eduservice.entity.form.courseInfoForm;
 import com.online.edu.school_eduservice.entity.query.courseQuery;
+import com.online.edu.school_eduservice.entity.vo.ChapterVo;
 import com.online.edu.school_eduservice.entity.vo.CoursePublishVo;
+import com.online.edu.school_eduservice.entity.vo.CourseWebVo;
+import com.online.edu.school_eduservice.service.EduChapterService;
 import com.online.edu.school_eduservice.service.EduCourseService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,6 +30,8 @@ import java.util.List;
 @RequestMapping("/school_eduservice/edu-course")
 @CrossOrigin
 public class EduCourseController {
+    @Autowired
+    private EduChapterService eduChapterService;
     @Autowired
     private EduCourseService eduCourseService;
     //发布课程，修改课程状态为Normal
@@ -111,5 +116,8 @@ public class EduCourseController {
         }
 
     }
+
+
+
 }
 
