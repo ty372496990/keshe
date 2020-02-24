@@ -1,5 +1,6 @@
 package com.online.edu.userservice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.online.edu.userservice.entity.UcenterMember;
 import com.online.edu.userservice.mapper.UcenterMemberMapper;
 import com.online.edu.userservice.service.UcenterMemberService;
@@ -20,5 +21,16 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
     @Override
     public Integer registerCount(String day) {
         return baseMapper.registerCount(day);
+    }
+
+    @Override
+    public String getUserId(String mobile, String nickName) {
+        //通过昵称和电话查询用户的id
+        QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
+        wrapper.eq("mobile",mobile);
+        wrapper.eq("nickname",nickName);
+        UcenterMember ucenterMember = baseMapper.selectOne(wrapper);
+        String id = ucenterMember.getId();
+        return id;
     }
 }

@@ -1,9 +1,6 @@
 package com.online.edu.userservice.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -58,9 +55,12 @@ public class UcenterMember implements Serializable {
     private String sign;
 
     @ApiModelProperty(value = "是否禁用 1（true）已禁用，  0（false）未禁用")
+    @TableField(fill = FieldFill.INSERT)
     private Boolean isDisabled;
 
     @ApiModelProperty(value = "逻辑删除 1（true）已删除， 0（false）未删除")
+    @TableField(fill = FieldFill.INSERT)
+    @TableLogic
     private Boolean isDeleted;
 
     @ApiModelProperty(value = "创建时间")

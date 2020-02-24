@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface UcenterMemberService extends IService<UcenterMember> {
 
     Integer registerCount(String day);
+
+    String getUserId(String mobile, String nickName);
 }

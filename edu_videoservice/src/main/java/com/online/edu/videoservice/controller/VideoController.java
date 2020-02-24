@@ -1,8 +1,13 @@
 package com.online.edu.videoservice.controller;
 
+import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
 import com.online.edu.common.R;
 import com.online.edu.videoservice.service.VideoService;
+import com.online.edu.videoservice.utils.AliYunSDKUtils;
+import com.online.edu.videoservice.utils.ConstantPropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,5 +39,21 @@ public class VideoController {
     public R deleteVideo(@PathVariable String videoId) throws ClientException {
         videoService.deleteVideoAliYun(videoId);
         return R.ok();
+    }
+
+    //根据video_source_id获取播放凭证
+    @GetMapping("getPlayAuth/{vid}")
+    public R getPlayAuth(@PathVariable String vid) throws ClientException {
+        DefaultAcsClient client = AliYunSDKUtils.initVodClient(ConstantPropertiesUtil.ACCESS_KEY_ID,ConstantPropertiesUtil.ACCESS_KEY_SECRET);
+        GetVideoPlayAuthResponse response = new GetVideoPlayAuthResponse();
+        GetVideoPlayAuthRequest request = new GetVideoPlayAuthRequest();
+        request.setVideoId(vid);
+        response = client.getAcsResponse(request);
+        //播放凭证
+        System.out.print("PlayAuth = " + response.getPlayAuth() + "\n");
+        //VideoMeta信息
+        System.out.print("VideoMeta.Title = " + response.getVideoMeta().getTitle() + "\n");
+        String playAuth = response.getPlayAuth();
+        return R.ok().data("playAuth",playAuth);
     }
 }
