@@ -16,4 +16,6 @@ public interface UcenterMemberService extends IService<UcenterMember> {
     Integer registerCount(String day);
 
     String getUserId(String mobile, String nickName);
+
+    UcenterMember isLoginById(String nickName, String password);
 }

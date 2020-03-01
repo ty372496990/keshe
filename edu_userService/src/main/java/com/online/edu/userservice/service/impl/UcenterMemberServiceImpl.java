@@ -1,10 +1,10 @@
 package com.online.edu.userservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.online.edu.userservice.entity.UcenterMember;
 import com.online.edu.userservice.mapper.UcenterMemberMapper;
 import com.online.edu.userservice.service.UcenterMemberService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,5 +32,14 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         UcenterMember ucenterMember = baseMapper.selectOne(wrapper);
         String id = ucenterMember.getId();
         return id;
+    }
+
+    @Override
+    public UcenterMember isLoginById(String nickName, String password) {
+        QueryWrapper<UcenterMember> wrapper = new QueryWrapper<>();
+        wrapper.eq("nickname",nickName);
+        wrapper.eq("password",password);
+        UcenterMember ucenterMember = baseMapper.selectOne(wrapper);
+        return ucenterMember;
     }
 }

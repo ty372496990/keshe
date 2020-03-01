@@ -5,7 +5,11 @@ import com.online.edu.common.R;
 import com.online.edu.school_eduservice.entity.EduVideo;
 import com.online.edu.school_eduservice.service.EduVideoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -57,6 +61,17 @@ public class EduVideoController {
         }else {
             return R.error();
         }
+    }
+    //查询所有小节信息，并获取视频源id
+    @GetMapping("getAllVideoId")
+    public R getAllVideoId() {
+        List<EduVideo> list = eduVideoService.list();
+        List<String> listId = new ArrayList<>();
+        for (EduVideo eduVideo : list) {
+            if(!StringUtils.isEmpty(eduVideo.getVideoSourceId()))
+            listId.add(eduVideo.getVideoSourceId());
+        }
+        return R.ok().data("listId",listId);
     }
 }
 

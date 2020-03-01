@@ -5,8 +5,7 @@ import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.vod.model.v20170321.DeleteVideoRequest;
-import com.aliyuncs.vod.model.v20170321.DeleteVideoResponse;
+import com.aliyuncs.vod.model.v20170321.*;
 import com.online.edu.videoservice.service.VideoService;
 import com.online.edu.videoservice.utils.AliYunSDKUtils;
 import com.online.edu.videoservice.utils.ConstantPropertiesUtil;
@@ -15,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -65,5 +66,48 @@ public class VideoServiceImpl implements VideoService {
         request.setVideoIds(join);
         DeleteVideoResponse response = client.getAcsResponse(request);
         System.out.print("RequestId = " + response.getRequestId() + "\n");
+    }
+
+    @Override
+    public Map<String, Object> getInfo(List<String> listId) throws ClientException {
+        DefaultAcsClient client = AliYunSDKUtils.initVodClient(ConstantPropertiesUtil.ACCESS_KEY_ID, ConstantPropertiesUtil.ACCESS_KEY_SECRET);
+        GetVideoInfosRequest request = new GetVideoInfosRequest();
+        String join = StringUtils.join(listId.toArray(), ',');
+        request.setVideoIds(join);
+        GetVideoInfosResponse response = client.getAcsResponse(request);
+
+        //创建HashMap来保存数据
+        Map<String,Object> map = new HashMap<>();
+        if (response.getVideoList() != null && response.getVideoList().size() > 0) {
+            System.out.print("===== exist video infos : ===== \n");
+            for (GetVideoInfosResponse.Video video : response.getVideoList()) {
+                System.out.print("VideoId = " + video.getVideoId() + "\n");
+                System.out.print("Title = " + video.getTitle() + "\n");
+                System.out.print("Description = " + video.getDescription() + "\n");
+                System.out.print("Tags = " + video.getTags() + "\n");
+                System.out.print("CreationTime = " + video.getCreationTime() + "\n");
+                map.put("title",video.getTitle());
+            }
+        }
+        return map;
+    }
+    //根据视频源id获取视频url
+    @Override
+    public String getMezz(String vid) throws ClientException {
+        DefaultAcsClient client = AliYunSDKUtils.initVodClient(ConstantPropertiesUtil.ACCESS_KEY_ID, ConstantPropertiesUtil.ACCESS_KEY_SECRET);
+        GetMezzanineInfoResponse response = new GetMezzanineInfoResponse();
+        GetMezzanineInfoRequest request = new GetMezzanineInfoRequest();
+        request.setVideoId(vid);
+        //源片下载地址过期时间
+        request.setAuthTimeout(3600L);
+
+        response = client.getAcsResponse(request);
+
+        System.out.print("Mezzanine.VideoId = " + response.getMezzanine().getVideoId() + "\n");
+        System.out.print("Mezzanine.FileURL = " + response.getMezzanine().getFileURL() + "\n");
+        System.out.print("Mezzanine.Width = " + response.getMezzanine().getWidth() + "\n");
+        System.out.print("Mezzanine.Height = " + response.getMezzanine().getHeight() + "\n");
+        System.out.print("Mezzanine.Size = " + response.getMezzanine().getSize() + "\n");
+        return response.getMezzanine().getFileURL();
     }
 }
