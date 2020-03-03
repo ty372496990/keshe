@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.online.edu.common.R;
 import com.online.edu.userservice.entity.UcenterMember;
 import com.online.edu.userservice.service.UcenterMemberService;
+import com.online.edu.userservice.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +28,14 @@ public class UcenterMemberController {
     private UcenterMemberService ucenterMemberService;
 
 
+    @GetMapping("getUserInfoByToken/{token}")
+    public R getUserInfoByToken(@PathVariable String token) {
+        Claims claims = JwtUtils.checkJWT(token);
+        String nickname = (String)claims.get("nickname");
+        String avatar = (String)claims.get("avatar");
+        String id = (String)claims.get("id");
+        return R.ok().data("nickname",nickname).data("avatar",avatar).data("id",id);
+    }
     @GetMapping("sumRegister/{day}")
     public R sumRegister(@PathVariable("day") String day){
         Integer result = ucenterMemberService.registerCount(day);
@@ -35,8 +45,9 @@ public class UcenterMemberController {
     @PostMapping("addUser")
     public R addUser(@RequestBody UcenterMember member) {
         boolean save = ucenterMemberService.save(member);
+        String s = JwtUtils.geneJsonWebToken(member);
         if(save) {
-            return R.ok();
+            return R.ok().data("token",s);
         }else {
             return R.error();
         }
@@ -61,7 +72,8 @@ public class UcenterMemberController {
     public R isLogin(@PathVariable("nickName") String nickName,
                      @PathVariable("password") String password) {
         UcenterMember ucenterMember = ucenterMemberService.isLoginById(nickName,password);
-        return R.ok().data("ucenterMember",ucenterMember);
+        String s = JwtUtils.geneJsonWebToken(ucenterMember);
+        return R.ok().data("ucenterMember",ucenterMember).data("token",s);
     }
 
     //分页查询用户信息

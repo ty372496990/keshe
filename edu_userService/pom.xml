@@ -11,6 +11,13 @@
 
     <artifactId>edu_userService</artifactId>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.online.edu</groupId>
             <artifactId>school_common</artifactId>
