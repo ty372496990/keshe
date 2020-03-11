@@ -8,17 +8,14 @@ import com.online.edu.common.R;
 import com.online.edu.videoservice.service.VideoService;
 import com.online.edu.videoservice.utils.AliYunSDKUtils;
 import com.online.edu.videoservice.utils.ConstantPropertiesUtil;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
@@ -80,43 +77,12 @@ public class VideoController {
     @GetMapping("httpDownload/{httpUrl}/{saveFile}")
     public R httpDownload(@PathVariable("httpUrl") String httpUrl,
                                 @PathVariable("saveFile") String saveFile) {
-        boolean result = false;
-        // 1.下载网络文件
-        int byteRead;
-        URL url = null;
         try {
-            url = new URL(httpUrl);
-        } catch (MalformedURLException e1) {
-            e1.printStackTrace();
-            result =  false;
-        }
-
-        try {
-            //2.获取链接
-            URLConnection conn = url.openConnection();
-            //3.输入流
-            InputStream inStream = conn.getInputStream();
-            //3.写入文件
-            FileOutputStream fs = new FileOutputStream(saveFile);
-
-            byte[] buffer = new byte[1024];
-            while ((byteRead = inStream.read(buffer)) != -1) {
-                fs.write(buffer, 0, byteRead);
-            }
-            inStream.close();
-            fs.close();
-            result = true;
-        } catch (FileNotFoundException e) {
+            FileUtils.copyURLToFile(new URL(httpUrl),new File(saveFile));
+        }catch (IOException e) {
             e.printStackTrace();
-            result = false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            result = false;
-        }
-        if(result) {
-            return R.ok();
-        }else {
             return R.error();
         }
+        return R.ok();
     }
 }

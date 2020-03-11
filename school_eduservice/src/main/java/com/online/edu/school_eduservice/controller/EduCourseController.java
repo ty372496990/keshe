@@ -1,14 +1,13 @@
 package com.online.edu.school_eduservice.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.online.edu.common.R;
 import com.online.edu.school_eduservice.entity.EduCourse;
 import com.online.edu.school_eduservice.entity.form.courseInfoForm;
 import com.online.edu.school_eduservice.entity.query.courseQuery;
-import com.online.edu.school_eduservice.entity.vo.ChapterVo;
 import com.online.edu.school_eduservice.entity.vo.CoursePublishVo;
-import com.online.edu.school_eduservice.entity.vo.CourseWebVo;
 import com.online.edu.school_eduservice.service.EduChapterService;
 import com.online.edu.school_eduservice.service.EduCourseService;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +15,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -117,6 +117,27 @@ public class EduCourseController {
 
     }
 
+    //查询所有的课程标题
+    @GetMapping("getAllCourseTitle")
+    public R getAllCourseTitle() {
+        List<String> titleList = new ArrayList<>();
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.select("title");
+        List<EduCourse> list = eduCourseService.list(wrapper);
+        for (EduCourse eduCourse : list) {
+            titleList.add(eduCourse.getTitle());
+        }
+        return R.ok().data("list",titleList);
+    }
+
+    @GetMapping("getCourseIdByTitle/{title}")
+    public R getCourseIdByTitle(@PathVariable String title) {
+        QueryWrapper<EduCourse> wrapper = new QueryWrapper<>();
+        wrapper.eq("title",title);
+        EduCourse one = eduCourseService.getOne(wrapper);
+        String id = one.getId();
+        return R.ok().data("id",id);
+    }
 
 
 }
